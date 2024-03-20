@@ -5,8 +5,14 @@ public class Kmeans extends oneNearestNeighbor{
     int numClusters;
     int numIterations;
     long seed;
+    List<List<Double>> listaCluster; //Esta es una lista que contiene cada uno de los representantes de cada grupo
 
-    //Constructor
+    //Constructores
+    public Kmeans(){
+        numClusters = 3;
+        numIterations = 10;
+        seed = 1000;
+    }
     public Kmeans (int numClusters, int numIterations, long seed){
         this.numClusters = numClusters;
         this.numIterations = numIterations;
@@ -17,24 +23,24 @@ public class Kmeans extends oneNearestNeighbor{
     //@Override
     public void train(Table datos){
         //Creamos una lista de tres representantes aleatorios
-        List<List<Double>> listaCluster = getRandomCluster(datos);
+        listaCluster = getRandomCluster(datos, this.seed);
 
         //Creamos un vector que cada dato corresponda a una iteración y que se le asigna el grupo al que corresponde
         int[] vectorGrupos = new int[datos.getSize()];
         for (int i = 0; i < numIterations; i++){
             for (int j = 0; j<datos.getSize(); j++){
-                vectorGrupos[j] = estimate(datos.getRowAt(j).getData(),listaCluster);
+                vectorGrupos[j] = estimate(datos.getRowAt(j).getData());
             }
             //Termina una iteración
             for (int j = 0; j<listaCluster.size(); j++){
-                listaCluster.set(i,actualizarCluster(vectorGrupos,datos,j));
+                listaCluster.set(j,actualizarCluster(vectorGrupos,datos,j));
             }
         }
     }
     //Métodos auxiliares de train
-    public List<List<Double>> getRandomCluster(Table datos){
+    private List<List<Double>> getRandomCluster(Table datos, long seed){
         List<Integer> listaRepresentante = new ArrayList<>();
-        Random random = new Random(2004);
+        Random random = new Random(seed); //Ponemos una seed para que siempre sea el mismo dato
         for (int i = 0; i<numClusters; i++) {
             int posibleRepresentante = random.nextInt(datos.getSize());
             while (listaRepresentante.contains(posibleRepresentante)) {
@@ -48,7 +54,7 @@ public class Kmeans extends oneNearestNeighbor{
         }
         return listaCluster;
     }
-    public List<Double> actualizarCluster(int[] vectorGrupos, Table datos, int grupo){
+    private List<Double> actualizarCluster(int[] vectorGrupos, Table datos, int grupo){
         int contador = 0;
         double[] nuevoCluster = new double[datos.getColumnSize()];
         for (int i = 0; i<vectorGrupos.length; i++){
@@ -67,7 +73,7 @@ public class Kmeans extends oneNearestNeighbor{
         return listaCluster;
     }
     //@Override
-    public Integer estimate (List<Double> dato, List<List<Double>> listaCluster){
+    public Integer estimate (List<Double> dato){
         double minData = euclidea(dato,listaCluster.get(0));
         int min = 0;
         for (int i = 1; i<listaCluster.size(); i++){
