@@ -1,11 +1,14 @@
 import java.util.List;
 
-public class oneNearestNeighbor {
+public class oneNearestNeighbor extends Kmethods implements Algorithm<TableWithLabels,Integer,List<Double>> {
     private TableWithLabels database;
 
+    @Override
     public void train(TableWithLabels data){
         database = data;
     }
+
+    @Override
     public Integer estimate (List<Double> data){
         RowWhithLabel nearestNeighbor = (RowWhithLabel) database.getRowAt(0);
         double nearestComparation = euclidea(database.getRowAt(0).getData(),data);
@@ -21,15 +24,5 @@ public class oneNearestNeighbor {
         }
         return nearestNeighbor.getNumberClass();
     }
-    public double euclidea(List<Double> z, List<Double> x){
-        double devolver = 0.0;
-        int pos = 0;
 
-        while(pos < z.size()){
-            devolver += Math.pow(z.get(pos)-x.get(pos), 2);
-            pos++;
-        }
-        devolver = Math.sqrt(devolver);
-        return devolver;
-    }
 }
