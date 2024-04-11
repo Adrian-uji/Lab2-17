@@ -24,7 +24,7 @@ public class Kmeans extends Kmethods implements Algorithm<Table,Integer,List<Dou
     @Override
     public void train(Table datos) throws IndiceFueraDeRango {
         if (datos.getSize()<numClusters){
-            throw new IndiceFueraDeRango("Error, la tabla es más pequeña que el número de representantes escogico " + numClusters);
+            throw new IndiceFueraDeRango("Error, la tabla es más pequeña que el número de representantes escogido " + numClusters);
         }
         //Creamos una lista de tres representantes aleatorios
         listaCluster = getRandomCluster(datos, this.seed);
